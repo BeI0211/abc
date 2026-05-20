@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+
+<html class="light" lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FocusFlow - 오늘의 집중</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap');
+        
+        body {
+            font-family: 'Geist', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .task-row:hover .drag-handle {
+            opacity: 1;
+        }
+
+        input::placeholder {
+            color: #777587;
+        }
+
+        .ambient-lift {
+            transition: box-shadow 0.2s ease, transform 0.2s ease;
+        }
+
+        .ambient-lift:hover {
+            box-shadow: 0 10px 30px -10px rgba(79, 70, 229, 0.1);
+            transform: translateY(-1px);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-background": "#191c1e",
+                        "on-primary": "#ffffff",
+                        "background": "#f7f9fb",
+                        "primary-fixed": "#e2dfff",
+                        "surface-variant": "#e0e3e5",
+                        "on-primary-container": "#dad7ff",
+                        "on-tertiary-fixed-variant": "#7b2f00",
+                        "tertiary": "#7e3000",
+                        "on-tertiary-container": "#ffd2be",
+                        "surface-container-highest": "#e0e3e5",
+                        "primary-fixed-dim": "#c3c0ff",
+                        "tertiary-fixed-dim": "#ffb695",
+                        "on-secondary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "secondary-fixed": "#dae2fd",
+                        "tertiary-fixed": "#ffdbcc",
+                        "on-error": "#ffffff",
+                        "on-secondary-container": "#5c647a",
+                        "secondary-fixed-dim": "#bec6e0",
+                        "on-tertiary-fixed": "#351000",
+                        "primary": "#3525cd",
+                        "inverse-primary": "#c3c0ff",
+                        "error-container": "#ffdad6",
+                        "secondary": "#565e74",
+                        "surface-dim": "#d8dadc",
+                        "on-secondary-fixed-variant": "#3f465c",
+                        "outline": "#777587",
+                        "on-error-container": "#93000a",
+                        "primary-container": "#4f46e5",
+                        "on-surface": "#191c1e",
+                        "tertiary-container": "#a44100",
+                        "inverse-on-surface": "#eff1f3",
+                        "surface-tint": "#4d44e3",
+                        "inverse-surface": "#2d3133",
+                        "secondary-container": "#dae2fd",
+                        "on-surface-variant": "#464555",
+                        "surface-container": "#eceef0",
+                        "on-secondary-fixed": "#131b2e",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-high": "#e6e8ea",
+                        "on-primary-fixed": "#0f0069",
+                        "on-primary-fixed-variant": "#3323cc",
+                        "surface-bright": "#f7f9fb",
+                        "surface-container-low": "#f2f4f6",
+                        "outline-variant": "#c7c4d8",
+                        "surface": "#f7f9fb",
+                        "surface-container-lowest": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "section-gap": "48px",
+                        "unit": "8px",
+                        "gutter": "24px",
+                        "container-padding": "32px",
+                        "stack-gap": "16px"
+                    },
+                    "fontFamily": {
+                        "display": ["Geist"],
+                        "headline-lg": ["Geist"],
+                        "headline-md": ["Geist"],
+                        "label-md": ["Geist"],
+                        "body-md": ["Geist"],
+                        "body-lg": ["Geist"],
+                        "label-sm": ["Geist"]
+                    },
+                    "fontSize": {
+                        "display": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "500"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background min-h-screen flex">
+<!-- SideNavBar Anchor -->
+<aside class="hidden md:flex flex-col h-full w-64 fixed left-0 top-0 bg-surface-container-low p-stack-gap z-20">
+<div class="mb-10 px-2">
+<h1 class="font-display text-headline-md font-bold text-primary">FocusFlow</h1>
+<p class="font-display text-label-sm text-on-surface-variant opacity-70">Deep Work Mode</p>
+</div>
+<nav class="flex-1 flex flex-col gap-2">
+<a class="flex items-center gap-3 px-4 py-3 bg-primary-container text-on-primary-container rounded-lg font-display text-label-md transition-all active:scale-95" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">target</span>
+                Focus Board
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant rounded-lg font-display text-label-md transition-all" href="#">
+<span class="material-symbols-outlined">event_note</span>
+                Timeline
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant rounded-lg font-display text-label-md transition-all" href="#">
+<span class="material-symbols-outlined">sell</span>
+                Tags
+            </a>
+</nav>
+<div class="mt-auto pt-6 border-t border-outline-variant/20">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant rounded-lg font-display text-label-md transition-all" href="#">
+<span class="material-symbols-outlined">settings</span>
+                Settings
+            </a>
+<div class="flex items-center gap-3 px-4 py-4 mt-2">
+<div class="w-8 h-8 rounded-full bg-primary-fixed overflow-hidden">
+<img alt="User avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrN3SMGPoiXx5g3m1TMAbsVGzrIJpFI6CIJOXy6QmXhUKVamlYwa1_KgU4xXNsrUD7ndLNbYWrPG_amcTkRCjIHgRCwJe-3_oj0WLW-J4UX87gupmpVgnDIRALA9WLn9ZSSnEuE3J3WQBYwHDJSsdwfM72HkgBCPbzMcxjT_MBFA_WklkMtxfp_yHqVc2n9XEDw-cNksKEq7K1VCKn1Tg7wz7aI6gamtaIb3ZCOxKFiqIQCRR9pWnkjOcXpwDsVTsKSAEX65Yo06g"/>
+</div>
+<div class="flex flex-col overflow-hidden">
+<span class="text-label-md font-semibold truncate">User Name</span>
+<span class="text-label-sm opacity-60 truncate">Premium Plan</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 md:ml-64 min-h-screen flex flex-col">
+<!-- TopAppBar Anchor -->
+<header class="flex justify-between items-center px-gutter py-4 w-full max-w-[1200px] mx-auto z-10 sticky top-0 bg-background/80 backdrop-blur-md">
+<div class="md:hidden">
+<h1 class="font-display text-headline-md font-semibold text-primary">FocusFlow</h1>
+</div>
+<div class="hidden md:flex gap-8">
+<a class="font-display text-label-md text-primary font-semibold border-b-2 border-primary pb-1" href="#">Focus Board</a>
+<a class="font-display text-label-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">Timeline</a>
+<a class="font-display text-label-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">Tags</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">settings</button>
+<div class="w-8 h-8 rounded-full bg-secondary-container md:hidden">
+<img alt="User profile" class="w-full h-full object-cover rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCfTrw1I_wEBviZb5MAFc_zYo6-mXV86yPkjIjcVKxwqvxcF5QY1ILS_EM6b-eYG4cUEuyBB0Vl1QFohO3oS6lWmOo8MSNbTIu72gEqAzHveIop6T0OVdAy2BGOieMQb0jB7ZI6ALY-nvbNfhqdCSPCekF7vWdR6Id09G2ZThRP9-qEnv8I5O6-1LX8_juJgOuhRfo6rxtLpmuiYEXX1wW3vLKMIRPqBTiiVBWeVg8NefnJ8a91uesZTXppgG6vWqeII_T6aEmhSXQ"/>
+</div>
+</div>
+</header>
+<section class="w-full max-w-[800px] mx-auto px-gutter py-12 flex flex-col gap-12">
+<!-- Quick Add Section -->
+<div class="w-full">
+<div class="relative group">
+<input class="w-full bg-transparent border-0 border-b-2 border-outline-variant focus:ring-0 focus:border-primary text-headline-md font-display py-4 transition-all duration-300" placeholder="무엇에 집중할까요? #태그" type="text"/>
+<div class="absolute right-4 top-1/2 -translate-y-1/2 flex gap-2">
+<kbd class="hidden md:inline-flex items-center px-2 py-1 text-label-sm font-semibold text-on-surface-variant bg-surface-container rounded border border-outline-variant">Enter</kbd>
+</div>
+</div>
+<div class="mt-4 flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-primary-fixed/30 text-primary text-label-sm font-medium">#work</span>
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-secondary-fixed/30 text-secondary text-label-sm font-medium">#personal</span>
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-tertiary-fixed/30 text-tertiary text-label-sm font-medium">#learning</span>
+</div>
+</div>
+<!-- Today's Focus List -->
+<div class="flex flex-col gap-6">
+<div class="flex justify-between items-end">
+<h2 class="font-display text-display text-on-background">오늘의 집중</h2>
+<span class="text-label-md text-on-surface-variant">3 Tasks Left</span>
+</div>
+<!-- Progress bar -->
+<div class="w-full bg-surface-container-high h-1 rounded-full overflow-hidden">
+<div class="bg-primary h-full transition-all duration-500" style="width: 40%"></div>
+</div>
+<div class="flex flex-col mt-4">
+<!-- Task Item 1 -->
+<div class="task-row group flex items-center py-5 px-4 rounded-xl hover:bg-surface-container-lowest transition-all duration-200 ambient-lift cursor-pointer">
+<span class="drag-handle material-symbols-outlined text-outline-variant opacity-0 mr-3 transition-opacity">drag_indicator</span>
+<div class="flex items-center justify-center w-6 h-6 border-2 border-primary rounded-md mr-4 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary text-[18px] opacity-0 group-hover:opacity-20">check</span>
+</div>
+<div class="flex-1">
+<p class="font-display text-body-lg text-on-background">분기별 마케팅 성과 분석 리포트 작성</p>
+<div class="flex gap-2 mt-1">
+<span class="text-label-sm text-primary font-medium">#work</span>
+</div>
+</div>
+<span class="text-label-sm text-on-surface-variant font-display">10:00 AM</span>
+</div>
+<!-- Task Item 2 -->
+<div class="task-row group flex items-center py-5 px-4 rounded-xl hover:bg-surface-container-lowest transition-all duration-200 ambient-lift cursor-pointer">
+<span class="drag-handle material-symbols-outlined text-outline-variant opacity-0 mr-3 transition-opacity">drag_indicator</span>
+<div class="flex items-center justify-center w-6 h-6 border-2 border-primary rounded-md mr-4 bg-primary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-on-primary text-[18px]">check</span>
+</div>
+<div class="flex-1">
+<p class="font-display text-body-lg text-on-surface-variant line-through decoration-primary/40">UX 디자인 시스템 기초 가이드라인 검토</p>
+<div class="flex gap-2 mt-1">
+<span class="text-label-sm text-primary font-medium opacity-50">#work</span>
+</div>
+</div>
+<span class="text-label-sm text-on-surface-variant font-display">Completed</span>
+</div>
+<!-- Task Item 3 -->
+<div class="task-row group flex items-center py-5 px-4 rounded-xl hover:bg-surface-container-lowest transition-all duration-200 ambient-lift cursor-pointer">
+<span class="drag-handle material-symbols-outlined text-outline-variant opacity-0 mr-3 transition-opacity">drag_indicator</span>
+<div class="flex items-center justify-center w-6 h-6 border-2 border-outline-variant rounded-md mr-4 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary text-[18px] opacity-0 group-hover:opacity-20">check</span>
+</div>
+<div class="flex-1">
+<p class="font-display text-body-lg text-on-background">외국어 학습 (스페인어 2단원)</p>
+<div class="flex gap-2 mt-1">
+<span class="text-label-sm text-secondary font-medium">#learning</span>
+</div>
+</div>
+<span class="text-label-sm text-on-surface-variant font-display">2:00 PM</span>
+</div>
+<!-- Task Item 4 -->
+<div class="task-row group flex items-center py-5 px-4 rounded-xl hover:bg-surface-container-lowest transition-all duration-200 ambient-lift cursor-pointer">
+<span class="drag-handle material-symbols-outlined text-outline-variant opacity-0 mr-3 transition-opacity">drag_indicator</span>
+<div class="flex items-center justify-center w-6 h-6 border-2 border-outline-variant rounded-md mr-4 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary text-[18px] opacity-0 group-hover:opacity-20">check</span>
+</div>
+<div class="flex-1">
+<p class="font-display text-body-lg text-on-background">저녁 식료품 장보기</p>
+<div class="flex gap-2 mt-1">
+<span class="text-label-sm text-tertiary font-medium">#personal</span>
+</div>
+</div>
+<span class="text-label-sm text-on-surface-variant font-display">6:30 PM</span>
+</div>
+</div>
+</div>
+<!-- Focus Insight Bento Section -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+<div class="bg-surface-container-low p-6 rounded-2xl flex flex-col gap-4 ambient-lift">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">bolt</span>
+<span class="text-label-sm text-on-surface-variant font-medium">Current Streak</span>
+</div>
+<div class="flex flex-col">
+<span class="text-display font-display leading-none">12</span>
+<span class="text-label-md text-on-surface-variant">연속 집중일</span>
+</div>
+</div>
+<div class="bg-surface-container-low p-6 rounded-2xl flex flex-col gap-4 ambient-lift">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">monitoring</span>
+<span class="text-label-sm text-on-surface-variant font-medium">Weekly Progress</span>
+</div>
+<div class="flex items-end gap-1 h-12">
+<div class="w-full bg-primary h-1/3 rounded-sm opacity-20"></div>
+<div class="w-full bg-primary h-2/3 rounded-sm opacity-40"></div>
+<div class="w-full bg-primary h-1/2 rounded-sm opacity-30"></div>
+<div class="w-full bg-primary h-full rounded-sm"></div>
+<div class="w-full bg-primary h-3/4 rounded-sm opacity-60"></div>
+</div>
+<span class="text-label-md text-on-surface-variant">지난주 대비 15% 향상</span>
+</div>
+</div>
+</section>
+<!-- Aesthetic Footer Image -->
+<section class="mt-auto px-gutter py-12 max-w-[1200px] mx-auto w-full">
+<div class="relative w-full h-48 rounded-3xl overflow-hidden group">
+<img alt="Inspiring workspace" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A serene and ultra-minimalist office workspace with a single sleek laptop, a small green plant, and a notebook on a clean white desk. Soft morning sunlight streams through a large window, creating gentle shadows and a bright, focused atmosphere. The color palette consists of soft whites, cool grays, and natural wood tones, embodying the zero-friction and deep work philosophy of the FocusFlow app." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBv-BLchnUfJOYy6c3laYC3RSMpzWrmqQcbXcHBUQzRZgs-NobfCNHL2f4f1-PKjIDzOE3CMJ1r7Gve5IrrAbun3T7_-zIqnBsiGuZpAe_6stG6_LgK6UC2pbddCiEmFiBNHAhAb6bOYIUF7KKJEso4yefFJE98sxb1yr5B9UPGULrCZcXZduTa6dtHCAe-8V638KSCYBFcU9z-Lwts3ToVHLZM_i8oNERRaO3vHb5aA-Sy_xHd-D3U4KQyX09PZmlxXdrUuP1KE8"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent"></div>
+<div class="absolute bottom-6 left-8">
+<p class="font-display text-headline-md text-on-background max-w-xs">집중은 최고의 성과를 만듭니다.</p>
+</div>
+</div>
+</section>
+</main>
+<!-- FAB Suppression Rule followed: No FAB on primary dashboard to maintain minimalist workspace -->
+</body></html>

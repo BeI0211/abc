@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login | ProDash Admin</title>
+  <meta name="description" content="ProDash Admin — Secure login portal for authorized administrators." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ===== CSS Reset & Base ===== */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* ===== Design Tokens ===== */
+    :root {
+      /* Colors */
+      --color-primary: #004ac6;
+      --color-primary-container: #2563eb;
+      --color-on-primary: #ffffff;
+      --color-on-primary-container: #eeefff;
+      --color-surface: #f7f9fb;
+      --color-surface-container-lowest: #ffffff;
+      --color-on-surface: #191c1e;
+      --color-on-surface-variant: #434655;
+      --color-on-background: #191c1e;
+      --color-outline-variant: #c3c6d7;
+      --color-secondary-container: #dae2fd;
+      --color-primary-fixed: #dbe1ff;
+      --color-error: #ba1a1a;
+
+      /* Typography */
+      --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+      /* Spacing */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2rem;
+
+      /* Radii */
+      --radius-sm: 0.25rem;
+      --radius-default: 0.5rem;
+      --radius-lg: 0.75rem;
+      --radius-xl: 1rem;
+
+      /* Shadows */
+      --shadow-card: 0px 1px 3px rgba(0, 0, 0, 0.05), 0px 1px 2px rgba(0, 0, 0, 0.03);
+      --shadow-logo: 0px 4px 6px -1px rgba(0, 0, 0, 0.1), 0px 2px 4px -2px rgba(0, 0, 0, 0.1);
+    }
+
+    /* ===== Body ===== */
+    body {
+      font-family: var(--font-family);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: var(--color-on-background);
+      background: radial-gradient(circle at top left, #dbe1ff 0%, #f7f9fb 40%, #ffffff 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-md);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ===== Decorative Background Blobs ===== */
+    body::before,
+    body::after {
+      content: '';
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    body::before {
+      width: 400px;
+      height: 400px;
+      background: rgba(218, 226, 253, 0.25);
+      bottom: -100px;
+      left: -100px;
+    }
+
+    body::after {
+      width: 400px;
+      height: 400px;
+      background: rgba(219, 225, 255, 0.25);
+      top: -100px;
+      right: -100px;
+    }
+
+    /* ===== Login Container ===== */
+    .login-container {
+      width: 100%;
+      max-width: 440px;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xl);
+      animation: fadeInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(24px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ===== Logo Section ===== */
+    .logo-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .logo-icon {
+      width: 48px;
+      height: 48px;
+      background-color: var(--color-primary);
+      border-radius: var(--radius-default);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-logo);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .logo-icon:hover {
+      transform: translateY(-2px);
+      box-shadow: 0px 6px 12px -2px rgba(0, 74, 198, 0.3);
+    }
+
+    .logo-icon .material-symbols-outlined {
+      color: var(--color-on-primary);
+      font-size: 28px;
+      font-variation-settings: 'FILL' 1;
+    }
+
+    .logo-title {
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 28px;
+      color: var(--color-on-surface);
+    }
+
+    /* ===== Login Card ===== */
+    .login-card {
+      background-color: var(--color-surface-container-lowest);
+      border: 1px solid var(--color-outline-variant);
+      border-radius: var(--radius-xl);
+      padding: var(--space-xl);
+      box-shadow: var(--shadow-card);
+      transition: box-shadow 0.3s ease;
+    }
+
+    .login-card:hover {
+      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.06), 0px 2px 4px rgba(0, 0, 0, 0.04);
+    }
+
+    /* ===== Card Header ===== */
+    .card-header {
+      text-align: center;
+      margin-bottom: var(--space-xl);
+    }
+
+    .card-header h2 {
+      font-size: 30px;
+      font-weight: 700;
+      line-height: 38px;
+      letter-spacing: -0.02em;
+      color: var(--color-on-surface);
+      margin-bottom: var(--space-xs);
+    }
+
+    .card-header p {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: var(--color-on-surface-variant);
+    }
+
+    /* ===== Form ===== */
+    .login-form {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-lg);
+    }
+
+    /* ===== Form Group ===== */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+
+    .form-group label {
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 16px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--color-on-surface-variant);
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .form-group input[type="email"],
+    .form-group input[type="password"],
+    .form-group input[type="text"] {
+      width: 100%;
+      padding: var(--space-sm) var(--space-md);
+      background-color: var(--color-surface-container-lowest);
+      border: 1px solid var(--color-outline-variant);
+      border-radius: var(--radius-default);
+      font-family: var(--font-family);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: var(--color-on-surface);
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .form-group input[type="password"],
+    .form-group input[type="text"].password-input {
+      padding-right: var(--space-xl);
+    }
+
+    .form-group input::placeholder {
+      color: var(--color-outline-variant);
+    }
+
+    .form-group input:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(0, 74, 198, 0.1);
+    }
+
+    /* ===== Password Toggle ===== */
+    .password-toggle {
+      position: absolute;
+      right: var(--space-md);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--color-on-surface-variant);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      transition: color 0.2s ease;
+    }
+
+    .password-toggle:hover {
+      color: var(--color-primary);
+    }
+
+    .password-toggle .material-symbols-outlined {
+      font-size: 20px;
+    }
+
+    /* ===== Actions Row ===== */
+    .actions-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* ===== Custom Checkbox ===== */
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      cursor: pointer;
+    }
+
+    .checkbox-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .checkbox-wrapper input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      border: 1px solid var(--color-outline-variant);
+      border-radius: var(--radius-sm);
+      background-color: var(--color-surface-container-lowest);
+      cursor: pointer;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .checkbox-wrapper input[type="checkbox"]:checked {
+      background-color: var(--color-primary);
+      border-color: var(--color-primary);
+    }
+
+    .checkbox-wrapper .check-icon {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      color: var(--color-on-primary);
+      font-size: 16px;
+      font-variation-settings: 'wght' 700;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s ease;
+    }
+
+    .checkbox-wrapper input[type="checkbox"]:checked + .check-icon {
+      opacity: 1;
+    }
+
+    .checkbox-label span.checkbox-text {
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 18px;
+      color: var(--color-on-surface-variant);
+      transition: color 0.2s ease;
+    }
+
+    .checkbox-label:hover span.checkbox-text {
+      color: var(--color-on-surface);
+    }
+
+    /* ===== Forgot Password Link ===== */
+    .forgot-link {
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 18px;
+      color: var(--color-primary);
+      text-decoration: none;
+      transition: text-decoration 0.2s ease, opacity 0.2s ease;
+    }
+
+    .forgot-link:hover {
+      text-decoration: underline;
+      opacity: 0.85;
+    }
+
+    /* ===== Sign In Button ===== */
+    .btn-signin {
+      width: 100%;
+      padding: var(--space-md) var(--space-lg);
+      background-color: var(--color-primary-container);
+      color: var(--color-on-primary-container);
+      font-family: var(--font-family);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+      border: none;
+      border-radius: var(--radius-default);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      transition: opacity 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+    }
+
+    .btn-signin:hover {
+      opacity: 0.92;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+
+    .btn-signin:active {
+      transform: scale(0.98);
+    }
+
+    .btn-signin .material-symbols-outlined {
+      font-size: 20px;
+    }
+
+    /* ===== Card Footer ===== */
+    .card-footer {
+      margin-top: var(--space-xl);
+      padding-top: var(--space-lg);
+      border-top: 1px solid var(--color-outline-variant);
+      text-align: center;
+    }
+
+    .card-footer p {
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 18px;
+      color: var(--color-on-surface-variant);
+    }
+
+    .card-footer a {
+      color: var(--color-primary);
+      font-weight: 600;
+      text-decoration: none;
+      transition: text-decoration 0.2s ease;
+    }
+
+    .card-footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 480px) {
+      .login-card {
+        padding: var(--space-lg);
+      }
+
+      .card-header h2 {
+        font-size: 24px;
+        line-height: 32px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-container">
+
+    <!-- Logo Section -->
+    <div class="logo-section">
+      <div class="logo-icon" id="logo-icon">
+        <span class="material-symbols-outlined">dashboard</span>
+      </div>
+      <h1 class="logo-title">ProDash Admin</h1>
+    </div>
+
+    <!-- Login Card -->
+    <div class="login-card">
+
+      <!-- Header -->
+      <div class="card-header">
+        <h2>Welcome Back</h2>
+        <p>Please enter your credentials to continue.</p>
+      </div>
+
+      <!-- Form -->
+      <form class="login-form" id="login-form" onsubmit="return handleSubmit(event)">
+
+        <!-- Email -->
+        <div class="form-group">
+          <label for="email-input">Email Address</label>
+          <div class="input-wrapper">
+            <input
+              type="email"
+              id="email-input"
+              placeholder="admin@prodash.com"
+              autocomplete="email"
+              required
+            />
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+          <label for="password-input">Password</label>
+          <div class="input-wrapper">
+            <input
+              type="password"
+              id="password-input"
+              placeholder="••••••••"
+              autocomplete="current-password"
+              required
+            />
+            <button
+              type="button"
+              class="password-toggle"
+              id="password-toggle"
+              aria-label="Toggle password visibility"
+              onclick="togglePassword()"
+            >
+              <span class="material-symbols-outlined" id="visibility-icon">visibility</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="actions-row">
+          <label class="checkbox-label" for="remember-me">
+            <div class="checkbox-wrapper">
+              <input type="checkbox" id="remember-me" />
+              <span class="material-symbols-outlined check-icon">check</span>
+            </div>
+            <span class="checkbox-text">Remember me</span>
+          </label>
+          <a href="#" class="forgot-link" id="forgot-password-link">Forgot password?</a>
+        </div>
+
+        <!-- Sign In Button -->
+        <button type="submit" class="btn-signin" id="signin-button">
+          Sign In
+          <span class="material-symbols-outlined">arrow_forward</span>
+        </button>
+
+      </form>
+
+      <!-- Footer -->
+      <div class="card-footer">
+        <p>Authorized access only. Technical issues? <a href="#" id="contact-support-link">Contact Support</a></p>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    // Toggle password visibility
+    function togglePassword() {
+      const passwordInput = document.getElementById('password-input');
+      const visibilityIcon = document.getElementById('visibility-icon');
+
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        visibilityIcon.textContent = 'visibility_off';
+      } else {
+        passwordInput.type = 'password';
+        visibilityIcon.textContent = 'visibility';
+      }
+    }
+
+    // Handle form submit
+    function handleSubmit(event) {
+      event.preventDefault();
+
+      const email = document.getElementById('email-input').value;
+      const password = document.getElementById('password-input').value;
+      const button = document.getElementById('signin-button');
+
+      // Visual feedback
+      button.textContent = 'Signing in…';
+      button.style.pointerEvents = 'none';
+      button.style.opacity = '0.7';
+
+      // Simulate sign-in (replace with real auth)
+      setTimeout(() => {
+        button.innerHTML = 'Sign In <span class="material-symbols-outlined" style="font-size:20px">arrow_forward</span>';
+        button.style.pointerEvents = '';
+        button.style.opacity = '';
+        alert('Login submitted for: ' + email);
+      }, 1500);
+
+      return false;
+    }
+  </script>
+
+</body>
+</html>

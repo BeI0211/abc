@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FocusFlow — 스마트 할 일 관리</title>
+  <meta name="description" content="FocusFlow로 할 일을 스마트하게 관리하세요. 태그, 타임라인, 집중 모드를 지원합니다." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="todo.css" />
+</head>
+<body>
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-top">
+      <div class="brand">
+        <h1 class="brand-name">FocusFlow</h1>
+        <span class="brand-sub">Deep Work Mode</span>
+      </div>
+      <nav class="nav-menu">
+        <button class="nav-item active" data-page="focus" id="nav-focus">
+          <span class="material-symbols-outlined">target</span>
+          <span>Focus Board</span>
+        </button>
+        <button class="nav-item" data-page="timeline" id="nav-timeline">
+          <span class="material-symbols-outlined">schedule</span>
+          <span>Timeline</span>
+        </button>
+        <button class="nav-item" data-page="tags" id="nav-tags">
+          <span class="material-symbols-outlined">sell</span>
+          <span>Tags</span>
+        </button>
+      </nav>
+    </div>
+    <div class="sidebar-bottom">
+      <button class="nav-item" data-page="settings" id="nav-settings">
+        <span class="material-symbols-outlined">settings</span>
+        <span>Settings</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content" id="main-content">
+    <!-- Top Bar -->
+    <header class="topbar">
+      <div class="topbar-nav">
+        <button class="topbar-link active" data-page="focus">Focus Board</button>
+        <button class="topbar-link" data-page="timeline">Timeline</button>
+        <button class="topbar-link" data-page="tags">Tags</button>
+      </div>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="theme-toggle" aria-label="테마 전환">
+          <span class="material-symbols-outlined">dark_mode</span>
+        </button>
+        <div class="avatar" id="user-avatar">
+          <span class="material-symbols-outlined">person</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Page: Focus Board -->
+    <section class="page page-focus active" id="page-focus">
+      <div class="page-body">
+        <div class="content-area">
+          <!-- Task Input -->
+          <div class="task-input-card">
+            <div class="task-input-wrapper">
+              <input type="text" id="task-input" placeholder="무엇에 집중할까요? #태그" autocomplete="off" />
+              <button class="btn-enter" id="btn-add-task">Enter</button>
+            </div>
+            <div class="tag-chips" id="tag-chips">
+              <button class="tag-chip tag-work" data-tag="work">#work</button>
+              <button class="tag-chip tag-personal" data-tag="personal">#personal</button>
+              <button class="tag-chip tag-learning" data-tag="learning">#learning</button>
+            </div>
+          </div>
+
+          <!-- Today's Focus -->
+          <div class="section-header">
+            <h2>오늘의 집중</h2>
+            <div class="section-header-line"></div>
+            <span class="tasks-left" id="tasks-left">0 Tasks Left</span>
+          </div>
+
+          <!-- Task List -->
+          <div class="task-list" id="task-list">
+            <!-- Tasks rendered by JS -->
+          </div>
+
+          <!-- Empty State -->
+          <div class="empty-state" id="empty-state">
+            <span class="material-symbols-outlined empty-icon">check_circle</span>
+            <p>모든 할 일을 완료했습니다!</p>
+            <span class="empty-sub">새로운 할 일을 추가해보세요.</span>
+          </div>
+        </div>
+
+        <!-- Stats Sidebar -->
+        <div class="stats-area">
+          <div class="stat-card streak-card">
+            <div class="stat-icon">
+              <span class="material-symbols-outlined">bolt</span>
+            </div>
+            <div class="stat-info">
+              <span class="stat-label">Current Streak</span>
+              <div class="stat-value" id="streak-count">0</div>
+              <span class="stat-sub">연속 집중일</span>
+            </div>
+          </div>
+          <div class="stat-card progress-card">
+            <div class="stat-icon">
+              <span class="material-symbols-outlined">trending_up</span>
+            </div>
+            <div class="stat-info">
+              <span class="stat-label">Weekly Progress</span>
+              <div class="progress-bars" id="progress-bars">
+                <div class="bar" style="height:30%"></div>
+                <div class="bar" style="height:50%"></div>
+                <div class="bar" style="height:40%"></div>
+                <div class="bar" style="height:60%"></div>
+                <div class="bar bar-active" style="height:90%"></div>
+                <div class="bar bar-future" style="height:70%"></div>
+                <div class="bar bar-future" style="height:0%"></div>
+              </div>
+              <span class="stat-sub" id="progress-text">이번 주 진행 현황</span>
+            </div>
+          </div>
+          <!-- Focus Mode Card -->
+          <div class="focus-mode-card">
+            <h3>집중 모드</h3>
+            <p>모든 알림을 끄고 작업에 몰입하세요.</p>
+            <button class="btn-focus" id="btn-focus-mode">타이머 시작</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Page: Timeline -->
+    <section class="page page-timeline" id="page-timeline">
+      <div class="page-header">
+        <div>
+          <h2 class="page-title">스마트 타임라인</h2>
+          <p class="page-subtitle" id="timeline-subtitle">오늘의 일정을 확인하세요.</p>
+        </div>
+        <button class="btn-primary" id="btn-add-timeline">
+          <span class="material-symbols-outlined">add</span>
+          새 작업 추가
+        </button>
+      </div>
+      <div class="timeline-content">
+        <div class="timeline-list" id="timeline-list"></div>
+        <div class="timeline-stats">
+          <div class="stat-card">
+            <h4>오늘의 달성도</h4>
+            <div class="achievement">
+              <span class="achievement-label">완료된 작업</span>
+              <span class="achievement-value" id="achievement-pct">0%</span>
+            </div>
+            <div class="achievement-numbers">
+              <div class="ach-num"><strong id="ach-done">0</strong><span>완료</span></div>
+              <div class="ach-num"><strong id="ach-progress">0</strong><span>진행</span></div>
+              <div class="ach-num"><strong id="ach-new">0</strong><span>신규</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Page: Tags -->
+    <section class="page page-tags" id="page-tags">
+      <div class="page-header">
+        <div>
+          <h2 class="page-title">태그 관리</h2>
+          <p class="page-subtitle">모든 프로젝트와 업무를 스마트하게 분류하세요.</p>
+        </div>
+        <div class="tag-actions">
+          <div class="search-box">
+            <span class="material-symbols-outlined">search</span>
+            <input type="text" id="tag-search" placeholder="태그 검색..." />
+          </div>
+          <button class="btn-primary" id="btn-new-tag">
+            <span class="material-symbols-outlined">add</span>
+            새 태그
+          </button>
+        </div>
+      </div>
+      <div class="tag-cards" id="tag-cards"></div>
+    </section>
+
+    <!-- Page: Settings -->
+    <section class="page page-settings" id="page-settings">
+      <h2 class="page-title settings-title">설정</h2>
+      <div class="settings-content">
+        <div class="settings-main">
+          <div class="settings-card profile-card">
+            <div class="profile-info">
+              <div class="profile-avatar">
+                <span class="material-symbols-outlined">person</span>
+              </div>
+              <div>
+                <h3 id="profile-name">사용자</h3>
+                <p id="profile-email">user@focusflow.com</p>
+              </div>
+            </div>
+          </div>
+          <div class="settings-card">
+            <div class="setting-row">
+              <div>
+                <h4>다크 모드</h4>
+                <p>어두운 환경에서 눈의 피로를 줄입니다.</p>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="dark-mode-toggle" />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="setting-divider"></div>
+            <div class="setting-row">
+              <div>
+                <h4>알림 설정</h4>
+                <p>집중 세션 종료 전 알림을 받습니다.</p>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="notification-toggle" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="setting-divider"></div>
+            <div class="setting-row">
+              <div>
+                <h4>데이터 초기화</h4>
+                <p>모든 할 일과 설정을 초기화합니다.</p>
+              </div>
+              <button class="btn-danger" id="btn-reset-data">초기화</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Focus Timer Modal -->
+  <div class="modal-overlay" id="focus-modal">
+    <div class="modal">
+      <h3>집중 타이머</h3>
+      <div class="timer-display" id="timer-display">25:00</div>
+      <div class="timer-controls">
+        <button class="btn-timer" id="btn-timer-start">시작</button>
+        <button class="btn-timer btn-timer-reset" id="btn-timer-reset">리셋</button>
+      </div>
+      <button class="modal-close" id="modal-close">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- New Tag Modal -->
+  <div class="modal-overlay" id="tag-modal">
+    <div class="modal">
+      <h3>새 태그 만들기</h3>
+      <div class="modal-form">
+        <input type="text" id="new-tag-input" placeholder="태그 이름 (예: project)" />
+        <input type="color" id="new-tag-color" value="#4F46E5" />
+      </div>
+      <div class="modal-actions">
+        <button class="btn-timer" id="btn-save-tag">저장</button>
+        <button class="btn-timer btn-timer-reset" id="btn-cancel-tag">취소</button>
+      </div>
+      <button class="modal-close" id="tag-modal-close">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+  </div>
+
+  <script src="todo.js"></script>
+</body>
+</html>
